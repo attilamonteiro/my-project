@@ -26,6 +26,12 @@
     },
     methods: {
       async validateDate() {
+        if (!this.date) {
+          this.leapYearMessage = 'Date is required!';
+          this.dayOfWeek = '';
+          return;
+        }
+        
         try {
           const response = await axios.post('http://localhost:3000/validate-date', {
             date: this.date,
@@ -33,7 +39,11 @@
           this.leapYearMessage = response.data.isLeapYear;
           this.dayOfWeek = response.data.dayOfWeek;
         } catch (error) {
-          this.leapYearMessage = error.response.data.message;
+          if (error.response && error.response.data) {
+            this.leapYearMessage = error.response.data.message;
+          } else {
+            this.leapYearMessage = 'An error occurred while validating the date.';
+          }
           this.dayOfWeek = '';
         }
       },
@@ -42,6 +52,34 @@
   </script>
   
   <style scoped>
-  /* Your styles here */
+  /* Example styles */
+  form {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  label {
+    display: block;
+    margin-top: 1em;
+  }
+  
+  input, span {
+    display: block;
+    margin-top: 0.5em;
+  }
+  
+  button {
+    margin-top: 1em;
+    padding: 0.5em 1em;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
   </style>
   
