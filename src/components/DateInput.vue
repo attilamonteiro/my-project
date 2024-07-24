@@ -13,46 +13,39 @@
     </div>
   </template>
   
-  <script>
+  <script setup>
+  import { ref } from 'vue';
   import axios from 'axios';
   
-  export default {
-    data() {
-      return {
-        date: '',
-        leapYearMessage: '',
-        dayOfWeek: '',
-      };
-    },
-    methods: {
-      async validateDate() {
-        if (!this.date) {
-          this.leapYearMessage = 'Date is required!';
-          this.dayOfWeek = '';
-          return;
-        }
-        
-        try {
-          const response = await axios.post('http://localhost:3000/validate-date', {
-            date: this.date,
-          });
-          this.leapYearMessage = response.data.isLeapYear;
-          this.dayOfWeek = response.data.dayOfWeek;
-        } catch (error) {
-          if (error.response && error.response.data) {
-            this.leapYearMessage = error.response.data.message;
-          } else {
-            this.leapYearMessage = 'An error occurred while validating the date.';
-          }
-          this.dayOfWeek = '';
-        }
-      },
-    },
+  const date = ref('');
+  const leapYearMessage = ref('');
+  const dayOfWeek = ref('');
+  
+  const validateDate = async () => {
+    if (!date.value) {
+      leapYearMessage.value = 'Date is required!';
+      dayOfWeek.value = '';
+      return;
+    }
+  
+    try {
+      const response = await axios.post('http://localhost:3000/validate-date', {
+        date: date.value,
+      });
+      leapYearMessage.value = response.data.isLeapYear;
+      dayOfWeek.value = response.data.dayOfWeek;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        leapYearMessage.value = error.response.data.message;
+      } else {
+        leapYearMessage.value = 'An error occurred while validating the date.';
+      }
+      dayOfWeek.value = '';
+    }
   };
   </script>
   
   <style scoped>
-  /* Example styles */
   form {
     max-width: 400px;
     margin: 0 auto;
